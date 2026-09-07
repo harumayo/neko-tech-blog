@@ -1,0 +1,100 @@
+---
+import '../styles/global.css';
+import { SITE, CATEGORIES, GA_MEASUREMENT_ID } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** OGP画像の絶対/相対パス（任意） */
+  image?: string;
+  /** 記事ページなら 'article'、それ以外は 'website' */
+  type?: 'website' | 'article';
+  /** JSON-LD（構造化データ）を丸ごと差し込みたい場合 */
+  jsonLd?: object;
+}
+const {
+  title,
+  description = SITE.description,
+  image = '/ogp-default.png',
+  type = 'website',
+  jsonLd,
+} = Astro.props;
+
+const pageTitle = title ? `${title} | ${SITE.title}` : SITE.title;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const ogImage = new URL(image, SITE.url).href;
+---
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="google-site-verification" content="R-wATbbZK5LkL1yvn92jJJ-UZDb8Y1b69Iuu-uBxdc4" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+
+    <!-- Webフォント（見出し=Zen Maru Gothic / 本文=Noto Sans JP） -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- OGP / Twitter Card（SNSシェア時の見た目） -->
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+    <!-- Google Analytics 4 -->
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+    <script define:vars={{ GA_MEASUREMENT_ID }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', GA_MEASUREMENT_ID);
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container inner">
+        <a class="brand" href="/">
+          <div class="brand__name">neco <em>to.</em></div>
+          <div class="brand__tag">{SITE.headerTagline}</div>
+        </a>
+        <nav class="nav" aria-label="カテゴリ">
+          {CATEGORIES.map((c) => <a href={`/category/${c.slug}/`}>{c.name}</a>)}
+          <a href="/blog/">記事一覧</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p><span class="flogo">neco <em>to.</em></span></p>
+        <p style="margin:.4em 0 1em">一人暮らしでも、猫との暮らしをちゃんと続けていくために。</p>
+        <p class="muted">{SITE.authorBio}</p>
+        <p class="muted">
+          当サイトはアフィリエイトプログラム（広告）を利用しています。
+          &nbsp;·&nbsp; <a href="/about/">運営者情報</a> &nbsp;·&nbsp; <a href="/privacy/">プライバシーポリシー</a>
+        </p>
+        <p class="muted">© {new Date().getFullYear()} {SITE.title}</p>
+      </div>
+    </footer>
+  </body>
+</html>

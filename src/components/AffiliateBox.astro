@@ -1,0 +1,54 @@
+---
+/**
+ * 商品紹介＆アフィリンクのボックス（ミニマル白基調・商品画像スロット常設）
+ * 使い方(MDX):
+ *   <AffiliateBox name="商品名" price="7,980円" rating={4.5}
+ *     img="/img/product.jpg" href="https://link" label="Amazonで見る">
+ *     一言おすすめコメント
+ *   </AffiliateBox>
+ * ※ img未指定のときは「商品画像」プレースホルダーを表示（後で差し替え）
+ */
+interface Props {
+  name: string; price?: string; rating?: number;
+  img?: string; href: string; label?: string;
+}
+const { name, price, rating, img, href, label = '詳細・価格を見る' } = Astro.props;
+const full = Math.floor(rating ?? 0);
+const half = (rating ?? 0) - full >= 0.5;
+---
+<div class="aff">
+  {img
+    ? <img class="aff__img" src={img} alt={name} loading="lazy" />
+    : <div class="aff__img aff__img--ph" aria-hidden="true">商品画像</div>}
+  <div class="aff__body">
+    <p class="aff__name">{name}</p>
+    {rating != null && (
+      <p class="aff__stars" aria-label={`評価 ${rating} / 5`}>
+        <span class="aff__starfill">{'★'.repeat(full)}{half ? '⯪' : ''}</span><span class="aff__starempty">{'☆'.repeat(Math.max(0, 5 - full - (half ? 1 : 0)))}</span>
+        <span class="aff__score">{rating.toFixed(1)}</span>
+      </p>
+    )}
+    {price && <p class="aff__price">参考価格 <strong>{price}</strong></p>}
+    <div class="aff__note"><slot /></div>
+    <a class="aff__btn" href={href} rel="sponsored nofollow noopener" target="_blank">{label}</a>
+    <p class="aff__pr">広告（アフィリエイト）を含みます</p>
+  </div>
+</div>
+
+<style>
+  .aff { display: grid; grid-template-columns: 132px 1fr; gap: 20px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-sm); padding: 20px; margin: 2em 0; align-items: start; }
+  .aff__img { width: 132px; height: 132px; object-fit: contain; border-radius: 10px; background: var(--surface-2); }
+  .aff__img--ph { display: grid; place-items: center; color: var(--ink-soft); font-size: .78rem; border: 1px dashed var(--line); }
+  .aff__name { font-weight: 700; font-size: 1.08rem; color: var(--ink); margin: 0 0 6px; line-height: 1.5; }
+  .aff__stars { margin: 0 0 6px; font-size: 1rem; letter-spacing: 1px; }
+  .aff__starfill { color: var(--gold); } .aff__starempty { color: var(--line); }
+  .aff__score { color: var(--ink-soft); font-size: .85rem; margin-left: 8px; letter-spacing: 0; }
+  .aff__price { margin: 0 0 8px; font-size: .95rem; color: var(--ink-soft); }
+  .aff__price strong { color: var(--ink); font-size: 1.02rem; }
+  .aff__note { font-size: .95rem; color: var(--ink-2); }
+  .aff__note :global(p) { margin: .3em 0; }
+  .aff__btn { display: inline-block; margin-top: 12px; background: var(--accent); color: #fff; font-weight: 700; text-decoration: none; padding: 11px 26px; border-radius: 10px; transition: background .12s; }
+  .aff__btn:hover { background: var(--accent-ink); color: #fff; }
+  .aff__pr { font-size: .72rem; color: var(--ink-soft); margin: 8px 0 0; }
+  @media (max-width: 560px) { .aff { grid-template-columns: 1fr; } .aff__img { width: 100%; height: 180px; } }
+</style>

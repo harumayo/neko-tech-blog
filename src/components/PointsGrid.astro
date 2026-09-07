@@ -1,0 +1,25 @@
+---
+import Icon from './Icon.astro';
+/** 選ぶときのポイント等：アイコン付き5カード
+ * <PointsGrid items={[{icon:'quality',title:'画質',sub:'夜でも見えるか'}]} /> */
+interface Item { icon: string; title: string; sub?: string; }
+interface Props { items: Item[]; }
+const { items } = Astro.props;
+---
+<div class="points">
+  {items.map((it) => (
+    <div class="point">
+      <span class="point__icon"><Icon name={it.icon} size={26} /></span>
+      <strong>{it.title}</strong>
+      {it.sub && <small>{it.sub}</small>}
+    </div>
+  ))}
+</div>
+<style>
+  .points { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 1.8em 0; }
+  .point { background: var(--cream); border: 1px solid var(--line); border-radius: 8px; padding: 18px 10px; text-align: center; }
+  .point__icon { color: var(--accent); display: inline-flex; margin-bottom: 8px; }
+  .point strong { display: block; font-size: .78rem; line-height: 1.5; color: var(--ink); }
+  .point small { display: block; color: var(--ink-soft); font-size: .66rem; line-height: 1.5; margin-top: 5px; }
+  @media (max-width: 700px) { .points { grid-template-columns: repeat(2, 1fr); } }
+</style>

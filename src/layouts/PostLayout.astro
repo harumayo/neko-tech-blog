@@ -1,0 +1,124 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import RelatedPosts from '../components/RelatedPosts.astro';
+import { SITE, CATEGORIES, IMG } from '../lib/site';
+import type { MarkdownHeading } from 'astro';
+
+interface RelatedItem { slug: string; title: string; description: string; }
+interface Props {
+  title: string; description: string; category: string;
+  pubDate: Date; updatedDate?: Date; cover?: string;
+  headings: MarkdownHeading[]; related?: RelatedItem[];
+}
+const { title, description, category, pubDate, updatedDate, cover, headings, related = [] } = Astro.props;
+const cat = CATEGORIES.find((c) => c.slug === category);
+const fmt = (d: Date) => d.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.');
+const toc = headings.filter((h) => h.depth === 2);
+const jsonLd = {
+  '@context': 'https://schema.org', '@type': 'Article', headline: title, description,
+  datePublished: pubDate.toISOString(), dateModified: (updatedDate ?? pubDate).toISOString(),
+  author: { '@type': 'Person', name: SITE.author }, publisher: { '@type': 'Organization', name: SITE.title },
+  mainEntityOfPage: new URL(Astro.url.pathname, SITE.url).href,
+};
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'TOP', item: SITE.url },
+    ...(cat ? [{ '@type': 'ListItem', position: 2, name: cat.name, item: new URL(`/category/${cat.slug}/`, SITE.url).href }] : []),
+    { '@type': 'ListItem', position: cat ? 3 : 2, name: title, item: new URL(Astro.url.pathname, SITE.url).href },
+  ],
+};
+---
+<BaseLayout title={title} description={description} type="article" image={cover ?? '/ogp-default.png'} jsonLd={jsonLd}>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />
+  <div class="crumbs-wrap"><div class="container"><nav class="crumbs">
+    <a href="/">TOP</a> ＞ {cat && <a href={`/category/${cat.slug}/`}>{cat.name}</a>} ＞ <span>{title}</span>
+  </nav></div></div>
+
+  <div class="container layout">
+    <article class="article">
+      <p class="meta"><span class="date">{fmt(pubDate)}</span>{cat && <a class="tag" href={`/category/${cat.slug}/`}>{cat.name}</a>}</p>
+      <h1 class="article__title">{title}</h1>
+      <p class="lead">{description}</p>
+      <div class="trust-row">
+        <span>◉ 徹底比較</span><span>♡ やさしい解説</span><span>♧ 正直なレビュー</span>
+      </div>
+      {cover && <img class="cover" src={cover} alt={title} />}
+
+      <div class="prose"><slot /></div>
+
+      <p class="disclaimer muted">※ 本記事はアフィリエイト広告を含みます。価格・仕様は執筆時点のものです。最新情報は各販売ページをご確認ください。</p>
+      <RelatedPosts posts={related} />
+    </article>
+
+    <aside class="sidebar">
+      {toc.length > 0 && (
+        <div class="side-card toc">
+          <h3>この記事の目次</h3>
+          <ol>{toc.map((h) => (<li><a href={`#${h.slug}`}>{h.text}</a></li>))}</ol>
+        </div>
+      )}
+      <div class="side-card author">
+        <h3>この記事の著者</h3>
+        <img src={IMG.author} alt="著者イメージ" />
+        <strong>neco to.</strong>
+        <p>{SITE.authorBio}</p>
+        <a class="author__btn" href="/about/">プロフィールを見る</a>
+      </div>
+      <div class="side-card diagnostic">
+        <h3>あなたに必要なものが<br />わかる診断</h3>
+        <p>3つの質問で、あなたの暮らしに合ったアイテムがわかります。</p>
+        <a class="diag-btn" href="#comparison-products" data-open-diagnosis>診断をはじめる →</a>
+        <span class="cat-silhouette">🐈</span>
+      </div>
+    </aside>
+  </div>
+
+  <style>
+    .crumbs-wrap { border-bottom: 1px solid var(--line); }
+    .crumbs { padding: 14px 0; font-size: .72rem; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .crumbs a { color: var(--ink-soft); }
+
+    .layout { display: grid; grid-template-columns: minmax(0,1fr) 240px; gap: 40px; align-items: start; padding-block: 44px 90px; }
+    .article { min-width: 0; }
+    .meta { display: flex; align-items: center; gap: 12px; font-size: .78rem; color: var(--ink-soft); margin: 0 0 16px; }
+    .article__title { font-size: 2.05rem; line-height: 1.48; letter-spacing: -.03em; font-weight: 800; margin: 0 0 .4em; }
+    .lead { font-size: .98rem; font-weight: 700; color: var(--ink); margin: 0 0 20px; }
+    .trust-row { display: flex; flex-wrap: wrap; gap: 24px; color: var(--accent-ink); font-size: .8rem; font-weight: 700; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+    .cover { width: 100%; border-radius: var(--radius-lg); margin: 1.8em 0 0; }
+    .disclaimer { font-size: .78rem; margin-top: 2.4em; }
+
+    .sidebar { display: flex; flex-direction: column; }
+    .side-card { background: var(--cream); border: 1px solid #eceeea; border-radius: 12px; padding: 24px 22px; margin-bottom: 20px; }
+    .side-card h3 { font-size: 1rem; line-height: 1.6; margin: 0 0 16px; font-weight: 800; }
+    .toc { position: sticky; top: 92px; }
+    .toc ol { counter-reset: toc; list-style: none; margin: 0; padding: 0; }
+    .toc li { counter-increment: toc; }
+    .toc a { display: flex; gap: 8px; font-size: .8rem; font-weight: 600; margin: 11px 0; color: #414641; line-height: 1.5; }
+    .toc a::before { content: counter(toc, decimal-leading-zero) "."; color: var(--accent); flex-shrink: 0; }
+    .toc a:hover { color: var(--accent); }
+
+    .author img { width: 68px; height: 68px; border-radius: 50%; object-fit: cover; display: block; margin: 2px 0 12px; }
+    .author__ph { background: var(--surface); border: 1px solid var(--line); padding: 8px; }
+    .author strong { font-family: var(--font-logo); font-size: 1.2rem; letter-spacing: -.02em; }
+    .author p { font-size: .76rem; line-height: 1.85; color: var(--ink-soft); margin: 10px 0 14px; }
+    .author__btn { display: inline-block; background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 8px 16px; font-size: .74rem; font-weight: 700; color: var(--ink); }
+    .author__btn:hover { border-color: var(--accent); color: var(--accent-ink); }
+
+    .diagnostic { position: relative; overflow: hidden; background: var(--green-light); }
+    .diagnostic p { font-size: .76rem; line-height: 1.8; color: var(--ink-soft); margin: 0 0 14px; }
+    .diag-btn { display: inline-block; background: var(--accent); color: #fff; border-radius: 5px; padding: 9px 18px; font-size: .78rem; font-weight: 700; position: relative; z-index: 1; }
+    .diag-btn:hover { background: var(--accent-ink); color: #fff; }
+    .cat-silhouette { position: absolute; right: 10px; bottom: -6px; font-size: 3.2rem; filter: grayscale(1); opacity: .5; }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; gap: 0; padding-block: 30px 60px; }
+      .sidebar { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .toc { position: static; }
+      .side-card { margin-bottom: 0; }
+      .article__title { font-size: 1.65rem; }
+    }
+    @media (max-width: 560px) { .sidebar { grid-template-columns: 1fr; } }
+  </style>
+</BaseLayout>

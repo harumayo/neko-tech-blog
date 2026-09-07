@@ -1,0 +1,77 @@
+---
+/** 購入導線の商品カード一覧（画像＋順位｜名＋レビュー評価＋メリデメ＋Amazon/楽天の二択CTA）
+ * <ProductList products={[{rank:1,name:'',sub:'',score:4.5,pros:[],cons:[],price:'¥5,480〜',amazon:'#',rakuten:'#',img:'/img/x.jpg'}]} /> */
+interface Product {
+  rank?: number; name: string; sub?: string; score?: number;
+  pros?: string[]; cons?: string[]; price?: string;
+  amazon?: string; rakuten?: string; img?: string;
+}
+interface Props { products: Product[]; }
+const { products } = Astro.props;
+const stars = (r?: number) => {
+  const f = Math.floor(r ?? 0), h = (r ?? 0) - f >= 0.5;
+  return '★'.repeat(f) + (h ? '★' : '') + '☆'.repeat(Math.max(0, 5 - f - (h ? 1 : 0)));
+};
+---
+<div class="product-list" id="comparison-products">
+  {products.map((p) => (
+    <article class="product-card">
+      {p.img ? <img src={p.img} alt={p.name} loading="lazy" /> : <div class="product-card__img ph">商品画像</div>}
+      <div class="product-card__body">
+        <h3>{p.rank ? `${p.rank}位｜` : ''}{p.name}</h3>
+        {p.sub && <p class="product-sub">{p.sub}</p>}
+        {p.score != null && (
+          <div class="product-score">
+            <span class="score">{p.score.toFixed(1)}</span>
+            <span class="stars">{stars(p.score)}</span>
+            <span class="score-label">レビュー評価</span>
+          </div>
+        )}
+        {(p.pros?.length || p.cons?.length) && (
+          <div class="proscons">
+            <div><h4>よかった点</h4><ul>{(p.pros ?? []).map((x) => <li>{x}</li>)}</ul></div>
+            <div><h4>気になった点</h4><ul>{(p.cons ?? []).map((x) => <li>{x}</li>)}</ul></div>
+          </div>
+        )}
+        <div class="purchase-row">
+          {p.price && <span class="price">{p.price}</span>}
+          {p.amazon && <a class="product-cta" href={p.amazon} rel="sponsored nofollow noopener" target="_blank">Amazonで価格を見る ↗</a>}
+          {p.rakuten && <a class={p.amazon ? 'product-cta secondary' : 'product-cta'} href={p.rakuten} rel="sponsored nofollow noopener" target="_blank">楽天で見る{p.amazon ? '' : ' ↗'}</a>}
+        </div>
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .product-list { display: grid; gap: 18px; margin: 1.8em 0; scroll-margin-top: 90px; }
+  .product-card { display: grid; grid-template-columns: 160px 1fr; gap: 22px; border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--surface); box-shadow: var(--shadow-sm); }
+  .product-card img, .product-card__img { width: 160px; height: 160px; object-fit: contain; background: var(--surface-2); border-radius: 8px; }
+  .product-card__img { display: grid; place-items: center; color: var(--ink-soft); font-size: .72rem; }
+  .product-card__body { min-width: 0; }
+  .product-card h3 { margin: 0 0 6px; font-size: 1.1rem; font-weight: 800; letter-spacing: -.01em; }
+  .product-sub { color: var(--ink-soft); font-size: .8rem; margin: 0 0 10px; }
+  .product-score { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .score { font-size: 1.3rem; font-weight: 800; color: var(--ink); }
+  .stars { color: var(--gold); letter-spacing: -.05em; }
+  .score-label { font-size: .68rem; color: var(--ink-soft); background: var(--surface-2); padding: 2px 8px; border-radius: 999px; }
+  .proscons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 10px 0 16px; }
+  .proscons h4 { font-size: .74rem; margin: 0 0 6px; color: var(--accent-ink); }
+  .proscons ul { margin: 0; padding: 0; list-style: none; }
+  .proscons li { position: relative; padding-left: 1.1em; font-size: .8rem; margin: .25em 0; }
+  .proscons li::before { content: "・"; position: absolute; left: 0; color: var(--ink-soft); }
+  .purchase-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .price { font-size: 1.15rem; font-weight: 800; color: var(--ink); margin-right: auto; }
+  .product-cta { display: inline-flex; align-items: center; justify-content: center; background: var(--accent-ink); color: #fff; border-radius: 7px; padding: 10px 18px; font-size: .78rem; font-weight: 700; transition: .18s; }
+  .product-cta:hover { background: #31483a; color: #fff; transform: translateY(-1px); }
+  .product-cta.secondary { background: var(--surface); color: var(--accent-ink); border: 1px solid #cdd6cf; }
+  .product-cta.secondary:hover { background: var(--surface-2); color: var(--accent-ink); }
+  @media (max-width: 560px) {
+    .product-card { grid-template-columns: 92px 1fr; padding: 14px; gap: 14px; }
+    .product-card img, .product-card__img { width: 92px; height: 92px; }
+    .product-card h3 { font-size: .98rem; }
+    .proscons { grid-template-columns: 1fr; gap: 8px; }
+    .price { width: 100%; margin: 0 0 4px; }
+    .purchase-row .product-cta { flex: 1; }
+  }
+</style>

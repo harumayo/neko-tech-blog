@@ -1,0 +1,35 @@
+---
+# ▼ 新規記事はこのテンプレをコピーして使う（ファイル名 = URLになる。英数字とハイフンで）
+title: ここに記事タイトル（32文字前後・主要キーワードを前半に）
+description: 検索結果に出る説明文（80〜120文字・キーワードを自然に含める）
+category: rusuban   # rusuban / mimamori / hiyou / heya / hajimete のどれか
+keywords: ["主要キーワード", "関連キーワード"]
+pubDate: 2026-01-01
+# updatedDate: 2026-02-01   # リライトしたら日付を入れる
+draft: true    # 公開する準備ができたら false に変える
+---
+import Callout from '../../components/Callout.astro';
+import ProsCons from '../../components/ProsCons.astro';
+import AffiliateBox from '../../components/AffiliateBox.astro';
+
+導入文（結論を先に・読者の悩みに共感）。
+
+<Callout type="note" title="この記事でわかること">
+箇条書きで要点。
+</Callout>
+
+## 見出し（H2・検索意図に対応）
+
+本文。**強調**はアクセント色になる。
+
+### 小見出し（H3）
+
+<AffiliateBox name="商品名" price="0,000円" rating={4.5} href="https://アフィリリンク" label="Amazonで見る">
+一言おすすめコメント。
+</AffiliateBox>
+
+<ProsCons pros={["メリット1", "メリット2"]} cons={["デメリット1"]} />
+
+## まとめ
+
+まとめ＋次に読む記事への内部リンク（<a href="/blog/別記事slug/">関連記事</a>）。

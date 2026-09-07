@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CATEGORIES } from '../../lib/site';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+const catName = (slug: string) => CATEGORIES.find((c) => c.slug === slug)?.name ?? slug;
+const fmt = (d: Date) => d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<BaseLayout title="記事一覧" description="ひとり暮らしで猫を飼う人向けの記事一覧。留守番・見守りテック・費用の比較ガイド。">
+  <div class="container" style="padding-block:36px 80px">
+    <h1 style="font-size:1.8rem;letter-spacing:-.02em">記事一覧</h1>
+    <div class="grid grid-2" style="margin-top:24px">
+      {posts.map((p) => (
+        <a class="card post-card" href={`/blog/${p.slug}/`}>
+          {p.data.cover
+            ? <img class="post-card__img" src={p.data.cover} alt={p.data.title} loading="lazy" />
+            : <div class="post-card__img ph">写真</div>}
+          <div class="post-card__body">
+            <span class="tag">{catName(p.data.category)}</span>
+            <h3 class="post-card__title">{p.data.title}</h3>
+            <p class="post-card__date">{fmt(p.data.pubDate)}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+    {posts.length === 0 && <p class="muted">記事を準備中です。</p>}
+  </div>
+</BaseLayout>

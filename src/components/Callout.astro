@@ -1,0 +1,27 @@
+---
+/**
+ * 補足・注意・ポイントのボックス（ミニマル：細い色ライン＋控えめラベル、絵文字なし）
+ * 使い方: <Callout type="tip">本文</Callout>
+ * type: tip(ポイント) / warn(注意) / note(メモ)
+ */
+interface Props { type?: 'tip' | 'warn' | 'note'; title?: string; }
+const { type = 'tip', title } = Astro.props;
+const preset = {
+  tip:  { label: 'POINT', color: 'var(--ok)' },
+  warn: { label: '注意', color: 'var(--warn)' },
+  note: { label: 'MEMO', color: 'var(--accent)' },
+}[type];
+---
+<div class="callout" style={`--c:${preset.color}`}>
+  <p class="callout__h">{title ?? preset.label}</p>
+  <div class="callout__b"><slot /></div>
+</div>
+<style>
+  .callout { border: 1px solid var(--line); border-left: 3px solid var(--c); background: var(--surface-2); border-radius: 0 var(--radius) var(--radius) 0; padding: 16px 20px; margin: 1.8em 0; }
+  .callout__h { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: var(--c); margin: 0 0 6px; font-size: .95rem; }
+  .callout__h::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+  .callout__b { color: var(--ink-2); }
+  .callout__b :global(p) { margin: .4em 0; }
+  .callout__b :global(p:last-child) { margin-bottom: 0; }
+  .callout__b :global(p:first-child) { margin-top: 0; }
+</style>

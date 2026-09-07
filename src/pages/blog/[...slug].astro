@@ -1,0 +1,42 @@
+---
+import { getCollection, render } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post, all: posts },
+  }));
+}
+
+const { post, all } = Astro.props;
+const { Content, headings } = await render(post);
+
+// 関連記事：同じカテゴリを優先し、足りなければ他カテゴリで補完（最大4件）
+const sameCat = all
+  .filter((p) => p.slug !== post.slug && p.data.category === post.data.category)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const others = all
+  .filter((p) => p.slug !== post.slug && p.data.category !== post.data.category)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const related = [...sameCat, ...others].slice(0, 4).map((p) => ({
+  slug: p.slug,
+  title: p.data.title,
+  description: p.data.description,
+  category: p.data.category,
+  cover: p.data.cover,
+}));
+---
+<PostLayout
+  title={post.data.title}
+  description={post.data.description}
+  category={post.data.category}
+  pubDate={post.data.pubDate}
+  updatedDate={post.data.updatedDate}
+  cover={post.data.cover}
+  headings={headings}
+  related={related}
+>
+  <Content />
+</PostLayout>

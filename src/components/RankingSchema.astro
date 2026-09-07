@@ -1,0 +1,20 @@
+---
+/**
+ * ランキング記事の構造化データ（ItemList）
+ * Googleに「これは順位つきのおすすめリスト」と伝え、リッチな表示を狙う。
+ * 使い方: <RankingSchema items={["1位の商品名","2位の商品名","3位の商品名"]} />
+ */
+interface Props { items: string[]; }
+const { items } = Astro.props;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListOrder: 'https://schema.org/ItemListOrderDescending',
+  itemListElement: items.map((name, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name,
+  })),
+};
+---
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

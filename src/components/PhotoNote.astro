@@ -1,0 +1,37 @@
+---
+/**
+ * 実写真の差し込み待ちプレースホルダー。
+ * 後で本物の写真に差し替える前提で、どんな写真が欲しいかをメモとして表示する。
+ * <PhotoNote caption="むぎがベッドで丸くなっている寝顔（照明は暖色）" />
+ * wide を付けると横長（記事幅いっぱい）、省略時は正方形寄り。
+ */
+interface Props { caption: string; wide?: boolean; }
+const { caption, wide = false } = Astro.props;
+---
+<figure class:list={["photonote", { "photonote--wide": wide }]}>
+  <div class="photonote__frame">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M4 8a2 2 0 0 1 2-2h1.5l1-1.5h7l1 1.5H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"/>
+      <circle cx="12" cy="12.5" r="3.5"/>
+    </svg>
+    <p class="photonote__label">写真スペース（差し替え待ち）</p>
+  </div>
+  <figcaption>{caption}</figcaption>
+</figure>
+<style>
+  .photonote { margin: 1.8em 0; }
+  .photonote__frame {
+    border: 1.5px dashed var(--line);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    color: var(--ink-2);
+    aspect-ratio: 4 / 3;
+    max-width: 420px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px;
+  }
+  .photonote--wide .photonote__frame { max-width: 100%; aspect-ratio: 16 / 7; }
+  .photonote__label { font-size: .78rem; margin: 0; letter-spacing: .02em; }
+  figcaption { margin-top: 8px; font-size: .84rem; color: var(--ink-2); }
+  figcaption::before { content: "📸 "; }
+</style>

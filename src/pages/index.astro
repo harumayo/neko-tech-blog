@@ -1,0 +1,143 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, CATEGORIES, IMG } from '../lib/site';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+const reviews = posts.slice(0, 3);
+const catName = (slug: string) => CATEGORIES.find((c) => c.slug === slug)?.name ?? slug;
+
+// お悩みから探す（モック準拠のラベル → 既存カテゴリへ）
+const worries = [
+  { icon: 'rusuban', label: '留守番が心配', slug: 'rusuban' },
+  { icon: 'gohan', label: 'ごはん・お水の管理', slug: 'mimamori' },
+  { icon: 'future', label: '将来・介護のこと', slug: 'hajimete' },
+  { icon: 'money', label: 'お金・費用の不安', slug: 'hiyou' },
+  { icon: 'travel', label: '出張・旅行のとき', slug: 'heya' },
+];
+const heroLines = SITE.heroTitle.split('\n');
+
+// サイト全体の構造化データ（Googleにサイトの正体を伝える）
+const siteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.title,
+  url: SITE.url,
+  description: SITE.description,
+  inLanguage: SITE.lang,
+  publisher: {
+    '@type': 'Organization',
+    name: SITE.title,
+    url: SITE.url,
+  },
+};
+---
+<BaseLayout jsonLd={siteJsonLd}>
+  <!-- ヒーロー -->
+  <section class="container hero">
+    <div class="hero__text">
+      <h1 class="hero__title">{heroLines.map((l) => <span>{l}<br /></span>)}</h1>
+      <p class="hero__lead">{SITE.heroLead}</p>
+      <a class="btn btn--dark" href="/category/hajimete/">はじめての方へ →</a>
+    </div>
+    <img class="hero__img blob" src={IMG.hero} alt="窓辺の猫とペットカメラ" />
+  </section>
+
+  <!-- TOPICS -->
+  <div class="container">
+    <div class="topics">
+      <span class="topics__label">TOPICS</span>
+      <span class="topics__date">2026.08.21</span>
+      <span class="topics__text">新しいレビュー記事を追加しました</span>
+    </div>
+  </div>
+
+  <!-- お悩みから探す -->
+  <section class="container block">
+    <h2 class="block__title">お悩みから探す</h2>
+    <div class="worries">
+      {worries.map((w) => (
+        <a class="worry" href={`/category/${w.slug}/`}>
+          <span class="worry__icon"><Icon name={w.icon} size={38} /></span>
+          <span class="worry__label">{w.label}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- 徹底比較レビュー -->
+  <section class="container block">
+    <div class="section-head">
+      <h2 class="block__title">徹底比較レビュー</h2>
+      <a href="/blog/">ALL REVIEW →</a>
+    </div>
+    <div class="grid grid-3">
+      {reviews.map((p) => (
+        <a class="card review" href={`/blog/${p.slug}/`}>
+          <img class="review__img" src={p.data.cover} alt={p.data.title} loading="lazy" />
+          <div class="review__body">
+            <span class="tag tag--plain">{catName(p.data.category)}</span>
+            <h3 class="review__name">{p.data.title}</h3>
+            <p class="review__desc">{p.data.description}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- 診断CTA -->
+  <section class="container">
+    <div class="diag">
+      <img class="diag__img" src="https://d8j0ntlcm91z4.cloudfront.net/user_3H2eytyQJTJWgLMEM4r7hON5Sis/hf_20260823_134615_67a2efe3-6bdb-469c-b026-279d8ed04a16.png" alt="くつろぐ猫" loading="lazy" />
+      <div class="diag__body">
+        <h2 class="diag__title">あなたに必要なアイテムと対策がわかる</h2>
+        <p class="diag__lead">3つの質問で、あなたの暮らしにぴったりの提案をお届けします。</p>
+        <a class="btn btn--ghost" href="/blog/">記事を見てみる →</a>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding-block: 40px 24px; }
+    .hero__title { font-size: 2.5rem; line-height: 1.55; margin: 0 0 .5em; }
+    .hero__lead { color: var(--ink-soft); margin: 0 0 28px; font-size: 1rem; }
+    .hero__img { aspect-ratio: 1/1; width: 100%; object-fit: cover; }
+    .blob { border-radius: 62% 38% 55% 45% / 55% 52% 48% 45%; }
+
+    .topics { display: flex; align-items: center; gap: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 12px 26px; font-size: .85rem; margin-top: 8px; }
+    .topics__label { font-family: var(--font-head); font-weight: 700; letter-spacing: .1em; }
+    .topics__date { color: var(--ink-soft); letter-spacing: .06em; }
+    .topics__text { color: var(--ink-2); }
+
+    .block { padding-block: 46px 0; }
+    .block__title { font-size: 1.55rem; margin: 0 0 24px; }
+
+    .worries { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .worry { background: var(--surface-2); border-radius: var(--radius-lg); padding: 26px 14px; text-align: center; text-decoration: none; color: var(--ink); display: flex; flex-direction: column; align-items: center; gap: 14px; transition: .15s; }
+    .worry:hover { background: var(--accent-soft); transform: translateY(-3px); }
+    .worry__icon { color: var(--ink); }
+    .worry__label { font-family: var(--font-head); font-weight: 700; font-size: .95rem; }
+
+    .review__img { aspect-ratio: 4/3; width: 100%; object-fit: cover; display: block; }
+    .review__body { padding: 18px 20px 22px; }
+    .review__name { font-size: 1.05rem; margin: 10px 0 8px; line-height: 1.55; }
+    .review__desc { font-size: .88rem; color: var(--ink-soft); margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .diag { display: grid; grid-template-columns: 340px 1fr; gap: 36px; align-items: center; background: var(--surface-2); border-radius: var(--radius-lg); padding: 34px; margin-top: 46px; }
+    .diag__img { aspect-ratio: 5/3; border-radius: var(--radius); width: 100%; object-fit: cover; display: block; }
+    .diag__title { font-size: 1.4rem; margin: 0 0 10px; }
+    .diag__lead { color: var(--ink-soft); margin: 0 0 20px; }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero__img { max-width: 420px; }
+      .hero__title { font-size: 2rem; }
+      .worries { grid-template-columns: repeat(3, 1fr); }
+      .diag { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) { .worries { grid-template-columns: 1fr 1fr; } }
+  </style>
+</BaseLayout>

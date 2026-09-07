@@ -1,0 +1,23 @@
+---
+import { SITE } from '../lib/site';
+---
+<aside class="author">
+  <img class="author__avatar" src="/favicon.svg" alt="" width="64" height="64" />
+  <div>
+    <p class="author__name">{SITE.author}</p>
+    <p class="author__bio">{SITE.authorBio}</p>
+    <p class="author__link"><a href="/about/">運営者情報をもっと見る →</a></p>
+  </div>
+</aside>
+<style>
+  .author {
+    display: grid; grid-template-columns: 64px 1fr; gap: 16px; align-items: start;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 18px 20px; margin: 2.4em 0 1em;
+  }
+  .author__avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); padding: 6px; }
+  .author__name { font-family: var(--font-head); font-weight: 700; margin: 0 0 2px; }
+  .author__bio { margin: 0; font-size: .9rem; color: var(--ink-soft); }
+  .author__link { margin: 8px 0 0; font-size: .85rem; }
+  .author__link a { text-decoration: none; font-weight: 700; }
+</style>

@@ -1,0 +1,29 @@
+---
+import { CATEGORIES } from '../lib/site';
+interface Item { slug: string; title: string; description: string; category?: string; cover?: string; }
+interface Props { posts: Item[]; }
+const { posts } = Astro.props;
+const catName = (slug?: string) => CATEGORIES.find((c) => c.slug === slug)?.name ?? '';
+---
+{posts.length > 0 && (
+  <section class="related">
+    <h2 class="section-title">あわせて読みたい</h2>
+    <div class="grid grid-2">
+      {posts.map((p) => (
+        <a class="card post-card" href={`/blog/${p.slug}/`}>
+          {p.cover
+            ? <img class="post-card__img" src={p.cover} alt={p.title} loading="lazy" />
+            : <div class="post-card__img ph">写真</div>}
+          <div class="post-card__body">
+            {p.category && <span class="tag">{catName(p.category)}</span>}
+            <h3 class="post-card__title">{p.title}</h3>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+<style>
+  .related { margin-top: 3em; }
+  .section-title { font-size: 1.3rem; margin: 0 0 1em; letter-spacing: -.01em; }
+</style>

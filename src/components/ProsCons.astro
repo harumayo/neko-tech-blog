@@ -1,0 +1,34 @@
+---
+/**
+ * メリット/デメリットの2カラム（ミニマル・絵文字なし）
+ * 使い方: <ProsCons pros={["軽い","静か"]} cons={["やや高い"]} />
+ */
+interface Props { pros: string[]; cons: string[]; }
+const { pros, cons } = Astro.props;
+---
+<div class="pc">
+  <div class="pc__col pc__pros">
+    <p class="pc__h">良い点</p>
+    <ul>{pros.map((p) => <li>{p}</li>)}</ul>
+  </div>
+  <div class="pc__col pc__cons">
+    <p class="pc__h">気になる点</p>
+    <ul>{cons.map((c) => <li>{c}</li>)}</ul>
+  </div>
+</div>
+<style>
+  .pc { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 1.8em 0; }
+  .pc__col { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; background: var(--surface); }
+  .pc__h { font-weight: 700; margin: 0 0 8px; font-size: .95rem; padding-left: 14px; position: relative; }
+  .pc__h::before { content: ""; position: absolute; left: 0; top: .35em; width: 6px; height: 1.1em; border-radius: 2px; }
+  .pc__pros .pc__h::before { background: var(--ok); }
+  .pc__cons .pc__h::before { background: var(--warn); }
+  .pc__pros .pc__h { color: var(--ok); }
+  .pc__cons .pc__h { color: var(--warn); }
+  .pc ul { margin: 0; padding-left: 0; list-style: none; }
+  .pc li { margin: .4em 0; position: relative; padding-left: 1.3em; }
+  .pc li::before { content: ""; position: absolute; left: .15em; top: .85em; width: 6px; height: 6px; border: none; border-radius: 50%; transform: none; }
+  .pc__pros li::before { background: var(--ok); }
+  .pc__cons li::before { background: var(--warn); }
+  @media (max-width: 560px) { .pc { grid-template-columns: 1fr; } }
+</style>

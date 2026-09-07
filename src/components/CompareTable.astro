@@ -1,0 +1,63 @@
+---
+/** 比較表：商品画像ヘッダー＋◎○△＋CTA（参考実装準拠）
+ * <CompareTable
+ *   products={[{name:'A',img:'/img/p1.jpg',href:'#',rating:4.5}]}
+ *   specs={[{label:'画質（昼/夜）', cells:['◎ / ◎','◎ / ○','○ / ○']}]}
+ *   ctaLabel="詳細を見る" priceRow={{label:'価格（税込）', cells:['¥5,480〜',...]}} />
+ */
+interface Product { name: string; img?: string; href: string; rating?: number; }
+interface Row { label: string; cells: string[]; }
+interface Props { products: Product[]; specs: Row[]; ctaLabel?: string; }
+const { products, specs, ctaLabel = '詳細を見る' } = Astro.props;
+const stars = (r?: number) => {
+  const f = Math.floor(r ?? 0), h = (r ?? 0) - f >= 0.5;
+  return '★'.repeat(f) + (h ? '☆' : '') + '☆'.repeat(Math.max(0, 5 - f - (h ? 1 : 0)));
+};
+---
+<div class="ct-wrap">
+  <table class="ct">
+    <thead>
+      <tr>
+        <th class="ct__corner">製品名</th>
+        {products.map((p) => (
+          <th>
+            {p.img ? <img src={p.img} alt="" /> : <div class="ct__ph">商品画像</div>}
+            <span class="ct__name">{p.name}</span>
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {products.some((p) => p.rating != null) && (
+        <tr>
+          <th>総合評価</th>
+          {products.map((p) => (<td><span class="ct__stars">{stars(p.rating)}</span> {p.rating?.toFixed(1)}</td>))}
+        </tr>
+      )}
+      {specs.map((row) => (
+        <tr>
+          <th>{row.label}</th>
+          {row.cells.map((c) => (<td>{c}</td>))}
+        </tr>
+      ))}
+      <tr>
+        <th></th>
+        {products.map((p) => (<td><a class="ct__cta" href={p.href} rel="sponsored nofollow noopener" target="_blank">{ctaLabel}</a></td>))}
+      </tr>
+    </tbody>
+  </table>
+</div>
+<style>
+  .ct-wrap { overflow-x: auto; margin: 1.8em 0; }
+  .ct { border-collapse: collapse; width: 100%; min-width: 620px; font-size: .78rem; }
+  .ct th, .ct td { border: 1px solid var(--line); padding: 9px 8px; text-align: center; vertical-align: middle; color: var(--ink-2); }
+  .ct thead th { font-weight: 700; font-size: .8rem; color: var(--ink); background: var(--surface); }
+  .ct__corner { width: 92px; text-align: left !important; }
+  .ct thead img, .ct__ph { display: block; width: 54px; height: 54px; object-fit: contain; margin: 0 auto 5px; border-radius: 4px; }
+  .ct__ph { background: var(--surface-2); display: grid; place-items: center; font-size: .58rem; color: var(--ink-soft); }
+  .ct__name { display: block; line-height: 1.4; }
+  .ct tbody th { text-align: left; background: var(--cream); font-weight: 600; color: var(--ink); }
+  .ct__stars { color: var(--gold); letter-spacing: -1px; }
+  .ct__cta { display: inline-block; background: var(--accent); color: #fff; border-radius: 4px; padding: 6px 14px; font-size: .72rem; font-weight: 700; }
+  .ct__cta:hover { background: var(--accent-ink); color: #fff; }
+</style>

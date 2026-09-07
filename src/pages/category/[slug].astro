@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CATEGORIES } from '../../lib/site';
+
+export async function getStaticPaths() {
+  return CATEGORIES.map((c) => ({ params: { slug: c.slug }, props: { cat: c } }));
+}
+const { cat } = Astro.props;
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.category === cat.slug)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+const fmt = (d: Date) => d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<BaseLayout title={cat.name} description={`${cat.name}に関する記事一覧。${cat.desc}`}>
+  <div class="container" style="padding-block:36px 80px">
+    <span class="tag">{cat.name}</span>
+    <h1 style="font-size:1.8rem;letter-spacing:-.02em;margin:.4em 0 .2em">{cat.name}</h1>
+    <p class="muted">{cat.desc}</p>
+    <div class="grid grid-2" style="margin-top:24px">
+      {posts.map((p) => (
+        <a class="card post-card" href={`/blog/${p.slug}/`}>
+          {p.data.cover
+            ? <img class="post-card__img" src={p.data.cover} alt={p.data.title} loading="lazy" />
+            : <div class="post-card__img ph">写真</div>}
+          <div class="post-card__body">
+            <span class="tag">{cat.name}</span>
+            <h3 class="post-card__title">{p.data.title}</h3>
+            <p class="post-card__date">{fmt(p.data.pubDate)}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+    {posts.length === 0 && <p class="muted">このカテゴリの記事は準備中です。</p>}
+  </div>
+</BaseLayout>
