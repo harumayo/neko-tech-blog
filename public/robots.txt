@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ubiquitous-kangaroo-7c7c73.netlify.app/sitemap-index.xml
+Sitemap: https://neko-tech-blog.lingmuye715.workers.dev/sitemap-index.xml
