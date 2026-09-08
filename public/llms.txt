@@ -1,0 +1,34 @@
+# neco to.
+
+> ひとり暮らしで猫を飼う人のための、留守番・見守りテック・費用ガイド。ペットカメラや自動給餌器、スマート家電を実際のユーザーレビューをもとに比較しています。
+
+neco to. は、都内近郊の1Kで猫（キジトラ・2歳）と2人暮らしをしている運営者が、実際の体験と丹念なリサーチをもとに書いているアフィリエイトブログです。商品の評価は良い点・気になる点の両方を正直に記載する方針で運営しています。
+
+## 留守番・お世話
+- [留守番グッズおすすめ7つ](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-rusuban-goods/): 自動給餌器・給水器・カメラなど、優先度順に揃えたい7つのグッズ
+- [猫の留守番は一泊まで大丈夫？](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-rusuban-ippaku/): 一泊留守番の目安と準備チェックリスト
+- [夏の暑さ対策](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-rusuban-natsu-atsusa/): エアコン設定と熱中症を防ぐ準備
+- [ひとり暮らしの猫は寂しい？](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-hitorigurashi-sabishii/): 留守番中のストレスサインと退屈を減らす工夫
+- [多頭飼いの始め方](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-tatoukai-hajimekata/): 相性の見方と対面のステップ
+- [シニア猫とひとり暮らし](https://neko-tech-blog.lingmuye715.workers.dev/blog/senior-neko-hitorigurashi-kaigo/): 留守番と介護の両立
+
+## 見守りテック
+- [ペットカメラの選び方とおすすめ3選](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-camera-ranking/): 画質・音声・追尾で比較
+- [AI搭載の猫見守りカメラとは](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-ai-mimamori-camera/): 異常検知でできることと選び方
+- [見守りIoTまとめ](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-mimamori-iot-matome/): ペットカメラ・給餌器・スマートリモコンの全体像
+- [SwitchBotで作る猫の見守り環境](https://neko-tech-blog.lingmuye715.workers.dev/blog/switchbot-neko-mimamori/): 留守番の自動化手順
+
+## 費用・保険
+- [ひとり暮らしで猫を飼う費用](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-hitorigurashi-hiyou/): 初期費用と月々・年間の総額
+- [ふるさと納税で揃える猫用品](https://neko-tech-blog.lingmuye715.workers.dev/blog/furusato-nouzei-pet-yohin/): 返礼品でお得にペット用品を
+
+## 部屋づくり・掃除
+- [猫の脱走防止](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-dassou-boushi/): 玄関・窓・ベランダの対策グッズ
+- [キャットタワーおすすめ](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-cat-tower-hikaku/): 部屋サイズ別の選び方
+- [猫のトイレ・猫砂おすすめ](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-toilet-nekozuna-hikaku/): 消臭力と掃除のしやすさで比較
+- [猫と防災](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-bousai-taisaku/): 地震のときのキャリー・持ち出し袋チェックリスト
+- [猫と引っ越し](https://neko-tech-blog.lingmuye715.workers.dev/blog/hikkoshi-neko-stress-taisaku/): 環境が変わるストレスを減らす対策
+
+## お迎え前・初心者
+- [ひとり暮らしで猫を飼う完全ガイド](https://neko-tech-blog.lingmuye715.workers.dev/blog/neko-hitorigurashi-kaikata-guide/): お迎え前の準備から留守番まで
+- [ペット可賃貸の探し方](https://neko-tech-blog.lingmuye715.workers.dev/blog/pet-kanou-chintai-sagashikata/): 猫と一人暮らしの部屋探しチェックリスト
