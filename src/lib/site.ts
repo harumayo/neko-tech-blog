@@ -34,12 +34,12 @@ export const PERSONA = {
 // Google Analytics 4 計測ID
 export const GA_MEASUREMENT_ID = 'G-XGSDF0M9WH';
 
-// 生成画像（AIで作成した写真）。差し替えたいときはここのURLを変更。
-const IMGBASE = 'https://d8j0ntlcm91z4.cloudfront.net/user_3H2eytyQJTJWgLMEM4r7hON5Sis';
+// 生成画像（AIで作成した写真）。ローカルの軽量化済みWebPを参照（元はCloudFront上の4〜6MB級PNGで、
+// LCP（表示速度）を著しく悪化させていたため public/covers/legacy/ に圧縮版を置いて差し替え済み）。
 export const IMG = {
-  hero: `${IMGBASE}/hf_20260823_134615_632646d0-42c9-4e87-9994-099ead9967cd.png`,
-  author: `${IMGBASE}/hf_20260823_134720_2ff48f1a-de17-4612-b382-304fb271870d.png`,
-  camera: `${IMGBASE}/hf_20260823_134615_557a7092-a61f-4d3f-b131-29c13dfa43dd.png`,
+  hero: '/covers/legacy/hf_20260823_134615_632646d0-42c9-4e87-9994-099ead9967cd.webp',
+  author: '/covers/legacy/hf_20260823_134720_2ff48f1a-de17-4612-b382-304fb271870d.webp',
+  camera: '/covers/legacy/hf_20260823_134615_557a7092-a61f-4d3f-b131-29c13dfa43dd.webp',
 };
 
 // カテゴリ（トピッククラスター）定義
