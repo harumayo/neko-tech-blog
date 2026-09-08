@@ -5,7 +5,7 @@ export const SITE = {
   description:
     'ひとり暮らしで猫を飼う人のための、留守番・見守りテック・費用ガイド。ペットカメラや自動給餌器、スマート家電を実際のユーザーレビューをもとに比較しています。',
   // 本番URL（astro.config.mjs の site と揃える）
-  url: 'https://ubiquitous-kangaroo-7c7c73.netlify.app',
+  url: 'https://neko-tech-blog.lingmuye715.workers.dev',
   lang: 'ja',
   locale: 'ja_JP',
   author: 'ゆい',
