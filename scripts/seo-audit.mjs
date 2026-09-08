@@ -62,8 +62,22 @@ for (const file of files) {
   const frontmatter = frontmatterMatch ? frontmatterMatch[1] : '';
 
   // cover
-  if (!/^cover:/m.test(frontmatter)) {
+  const coverMatch = frontmatter.match(/^cover:\s*(.+)$/m);
+  if (!coverMatch) {
     warn(file, 'cover画像が未設定です（OGP・記事一覧サムネが空になります）');
+  } else {
+    const coverPath = coverMatch[1].trim();
+    if (coverPath.startsWith('/')) {
+      const localPath = path.join(root, 'public', coverPath);
+      if (fs.existsSync(localPath)) {
+        const sizeKb = fs.statSync(localPath).size / 1024;
+        if (sizeKb > 300) {
+          warn(file, `cover画像が${Math.round(sizeKb)}KBあります（300KB超）。ChatGPT等で作ったPNGはそのままだと1〜2MBになりがちで、LCP（表示速度）を悪化させます。cwebp -q 80 -resize 1000 1000 でWebPに変換してください。`);
+        }
+      } else {
+        warn(file, `cover画像のファイルが見つかりません: public${coverPath}`);
+      }
+    }
   }
 
   // description length
